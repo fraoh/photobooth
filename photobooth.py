@@ -18,7 +18,19 @@ REAL_PATH = os.path.dirname(os.path.realpath(__file__))
 
 # Setup GPIO + Setup Camera
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(pin_camera_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # assign GPIO pin 21 to our "take photo" button
+SWITCH = 21
+GPIO.setup(SWITCH, GPIO.IN)
+RESET = 25
+GPIO.setup(RESET, GPIO.IN)
+PRINT_LED = 22
+POSE_LED = 18
+BUTTON_LED = 23
+GPIO.setup(POSE_LED, GPIO.OUT)
+GPIO.setup(BUTTON_LED, GPIO.OUT)
+GPIO.setup(PRINT_LED, GPIO.OUT)
+GPIO.output(BUTTON_LED, True)
+GPIO.output(PRINT_LED, False)
+
 #camera = picamera.PiCamera()
 #camera.rotation = 270  # Change this value to set the correct rotation (depending on how your camera is mounted)
 #camera.annotate_text_size = 80
@@ -63,31 +75,44 @@ def main():
 
     # Wait for someone to push the button
     while True:
-
-        # Check to see if button is pushed
-        is_pressed = GPIO.wait_for_edge(pin_camera_btn, GPIO.FALLING, timeout=100)
-
-        # Stay inside loop until button is pressed
-        if is_pressed is None:
-            continue
-
-        # Button has been pressed!
-        print("Button pressed!")
-        #camera.start_preview(resolution=(screen_w, screen_h))  # Start camera preview
-        sleep(2)
-        count_down()  # Count down to image capture
-
-        # Determine the filename to use when saving the image
-        filename = get_filename_for_image()
-        #camera.capture(filename)
-        print("Photo saved: " + filename)
-
-        # stop camera preview, and wait for the next button press
-        #camera.stop_preview()
-        is_pressed = False
-        print("Press the button to take another photo")
-
-
+        if (GPIO.input(SWITCH)):
+            snap = 0
+            while snap < 4:
+                print("pose!")
+                GPIO.output(BUTTON_LED, False)
+                GPIO.output(POSE_LED, True)
+                time.sleep(1.5)
+                for i in range(5):
+                    GPIO.output(POSE_LED, False)
+                    time.sleep(0.4)
+                    GPIO.output(POSE_LED, True)
+                    time.sleep(0.4)
+                for i in range(5):
+                    GPIO.output(POSE_LED, False)
+                    time.sleep(0.1)
+                    GPIO.output(POSE_LED, True)
+                    time.sleep(0.1)
+                GPIO.output(POSE_LED, False)
+                print("SNAP")
+                gpout = subprocess.check_output(
+                    "gphoto2 --capture-image-and-download --filename /home/pi/process_pix/photobooth%H%M%S.jpg",
+                    stderr=subprocess.STDOUT, shell=True)
+                print(gpout)
+                if "ERROR" not in gpout:
+                    snap += 1
+                GPIO.output(POSE_LED, False)
+                time.sleep(0.5)
+            #print("please wait while your photos print...")
+            GPIO.output(PRINT_LED, True)
+            # build image and send to printer
+            subprocess.call("sudo /home/pi/scripts/proces_image", shell=True)
+            # TODO: implement a reboot button
+            # Wait to ensure that print queue doesn't pile up
+            # TODO: check status of printer instead of using this arbitrary wait time
+            time.sleep(110)
+            print("ready for next round")
+            GPIO.output(PRINT_LED, False)
+            GPIO.output(BUTTON_LED, True)
 if __name__ == "__main__":
     try:
         main()
