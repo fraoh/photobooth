@@ -5,9 +5,8 @@
 
 
 # Imports
-import datetime
+import datetime, os, time
 from time import sleep
-import os
 import RPi.GPIO as GPIO
 
 # Variables
