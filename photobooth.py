@@ -2,7 +2,7 @@
 ##################################
 # Simple Raspberry Pi Photo Booth
 ##################################
-# (for a more advanced photo booth, visit: https://github.com/jibbius/raspberry_pi_photo_booth)
+
 
 # Imports
 import datetime
