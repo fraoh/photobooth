@@ -1,8 +1,8 @@
 #!/bin/bash
-mogrify -resize 968x648 /home/pi/process_pix/*.jpg
-montage /home/pi/process_pix/*.jpg -tile 2x2 -geometry +10+10 /home/pi/temp.jpg
-montage /home/pi/temp.jpg /home/pi/scripts/footer.jpg -tile 2x1 -geometry +5+5 /home/pi/temp_done.jpg
+mogrify -resize 545x365 /home/pi/process_pix/*.jpg
+montage /home/pi/process_pix/*.jpg -tile 2x2 -geometry +5+5 /home/pi/temp.jpg
+montage /home/pi/temp.jpg /home/pi/scripts/footer.jpg -tile 1x2 -geometry +0+0 /home/pi/temp_done.jpg
 suffix=$(date +%H%M%S)
 mv /home/pi/temp_done.jpg /home/pi/backups/${suffix}.jpg
-rm /home/pi/process_pix/*.jpg
-rm /home/pi/temp.jpg
+#rm /home/pi/process_pix/*.jpg
+#rm /home/pi/temp.jpg
