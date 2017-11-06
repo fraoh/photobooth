@@ -1,7 +1,7 @@
 sudo apt-get update
 sudo apt-get upgrade
 sudo wget raw.github.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh
-sudo chmod 755 gphoto2-updater.sh
+sudo chmod 777 gphoto2-updater.sh
 sudo ./gphoto2-updater.sh
 sudo rm /usr/share/dbus-1/services/org.gtk.Private.GPhoto2VolumeMonitor.service
 sudo rm /usr/share/gvfs/mounts/gphoto2.mount
