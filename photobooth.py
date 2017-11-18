@@ -10,8 +10,8 @@ import time, os, datetime, subprocess
 from time import sleep
 
 # Variables
-BUTTON_LED = 20
-SWITCH = 26
+BUTTON_LED = 16
+SWITCH = 21
 
 # Setup GPIO
 GPIO.setmode(GPIO.BCM)
